@@ -1,0 +1,45 @@
+{
+	"folders": [
+		{
+			"path": "Task1"
+		},
+		{
+			"path": "Task2"
+		},
+		{
+			"path": "Task3"
+		},
+		{
+			"path": "Task4"
+		},
+		{
+			"path": "Task5"
+		},
+		{
+			"path": "Task6"
+		},
+		{
+			"path": "Task7"
+		},
+		{
+			"path": "Task8"
+		},
+		{
+			"path": "Task9"
+		}
+	],
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+		{
+			"name": "Launch",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${fileDirname}",
+            "env": {},
+            "args": []
+		}
+		]
+	}
+}
