@@ -6,37 +6,40 @@ import (
 	"io"
 	"os"
 	"strconv"
-	"strings"
 )
 
 func main() {
-	inputFile, _ := os.Open("tests/1")
+	inputFile, _ := os.Open("tests/2")
 	run(inputFile, os.Stdout)
 }
 
 func run(r io.Reader, w io.Writer) {
-	in := bufio.NewReader(r)
-	out := bufio.NewWriter(w)
-	defer out.Flush()
-	var t int
-	fmt.Fscan(in, &t)
+	const maxCapacity = 512 * 1024
+	buf := make([]byte, maxCapacity)
+	scanner := bufio.NewScanner(r)
+	scanner.Buffer(buf, maxCapacity)
+	scanner.Split(bufio.ScanWords)
+
+	scanner.Scan()
+	t, _ := strconv.Atoi(scanner.Text())
 
 	for i := 0; i < t; i++ {
-		var n, m int
-		fmt.Fscan(in, &n, &m)
+		scanner.Scan()
+		n, _ := strconv.Atoi(scanner.Text())
+		scanner.Scan()
+		m, _ := strconv.Atoi(scanner.Text())
 
 		matrix := make([][]int, n)
 		for j := 0; j < n; j++ {
 			matrix[j] = make([]int, m)
-			line, _ := in.ReadString('\n')
-			nums := strings.Fields(strings.TrimSpace(line))
-			for k, num := range nums {
-				matrix[j][k], _ = strconv.Atoi(num)
+			scanner.Scan()
+			for k, c := range scanner.Text() {
+				matrix[j][k] = int(c - '0')
 			}
 		}
 
 		row, col := solve(w, matrix)
-		fmt.Fprintf(out, "%d %d\n", row+1, col+1)
+		fmt.Fprintf(w, "%d %d\n", row+1, col+1)
 	}
 }
 
@@ -65,7 +68,7 @@ func solve(w io.Writer, matrix [][]int) (int, int) {
 		}
 	}
 
-	fmt.Fprintf(w, "n, m: %d, %d\nminVal: %d\nminRow: %d\nminCol: %d\nrowCount(minRow): %d\ncolCount(minCol): %d\n", n, m, minVal, minRow, minCol, rowCount[minRow], colCount[minCol])
+	//fmt.Fprintf(w, "n, m: %d, %d\nminVal: %d\nminRow: %d\nminCol: %d\nrowCount(minRow): %d\ncolCount(minCol): %d\n", n, m, minVal, minRow, minCol, rowCount[minRow], colCount[minCol])
 
 	// Если есть несколько строк или столбцов с минимальным значением, найти строку и столбец с наибольшим количеством минимальных значений и удалить их.
 	maxCount := -1
@@ -109,7 +112,7 @@ func solve(w io.Writer, matrix [][]int) (int, int) {
 			}
 		}
 	}
-	fmt.Fprintf(w, "n, m: %d, %d\nminRow: %d\nminCol: %d\nminValSecond: %d\nminRowSecond: %d\nminColSecond: %d\nrowCount(minRowSecond): %d\ncolCount(minColSecond): %d\n", n, m, minRow, minCol, minValSecond, minRowSecond, minColSecond, rowCount[minRowSecond], colCount[minColSecond])
+	//fmt.Fprintf(w, "n, m: %d, %d\nminRow: %d\nminCol: %d\nminValSecond: %d\nminRowSecond: %d\nminColSecond: %d\nrowCount(minRowSecond): %d\ncolCount(minColSecond): %d\n", n, m, minRow, minCol, minValSecond, minRowSecond, minColSecond, rowCount[minRowSecond], colCount[minColSecond])
 
 	if minRow == -1 {
 		return minRowSecond, minCol
